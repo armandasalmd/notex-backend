@@ -6,6 +6,7 @@ const passport = require('passport')
 const users = require('./routes/api/users')
 
 const app = express()
+
 // Bodyparser middleware
 app.use(
 	bodyParser.urlencoded({

@@ -1,13 +1,18 @@
-const express = require('express')
+import express from 'express'
+import bcrypt from 'bcryptjs'
+import jwt from 'jsonwebtoken'
+
+import validateRegisterInput from '../validation/register'
+import validateLoginInput from '../validation/login'
+import User from '../models/User' // Load User model
+
+import { config } from 'dotenv'
+config()
+const JWT_SECRET = process.env.JWT_SECRET || 'no secret'
+if (!process.env.JWT_SECRET)
+	console.log('users.ts: JWT_SECRET is not set. Security issue!')
+
 const router = express.Router()
-const bcrypt = require('bcryptjs')
-const jwt = require('jsonwebtoken')
-const keys = require('../../config/keys')
-// Load input validation
-const validateRegisterInput = require('../../validation/register')
-const validateLoginInput = require('../../validation/login')
-// Load User model
-const User = require('../../models/User')
 
 // @route POST api/users/register
 // @desc Register user
@@ -24,19 +29,20 @@ router.post('/register', (req, res) => {
 			return res.status(400).json({ email: 'Email already exists' })
 		} else {
 			const newUser = new User({
-				name: req.body.name,
+				firstname: req.body.firstname,
+				lastname: req.body.lastname,
 				email: req.body.email,
 				password: req.body.password
 			})
 			// Hash password before saving in database
 			bcrypt.genSalt(10, (err, salt) => {
-				bcrypt.hash(newUser.password, salt, (err, hash) => {
-					if (err) throw err
+				bcrypt.hash(newUser.password, salt, (err2, hash) => {
+					if (err2) throw err2
 					newUser.password = hash
 					newUser
 						.save()
-						.then(user => res.json(user))
-						.catch(err => console.log(err))
+						.then(user2 => res.json(user2))
+						.catch(err3 => console.log(err3))
 				})
 			})
 		}
@@ -68,12 +74,14 @@ router.post('/login', (req, res) => {
 				// Create JWT Payload
 				const payload = {
 					id: user.id,
-					name: user.name
+					firstname: user.firstname,
+					lastname: user.lastname,
+					name: `${user.firstname} ${user.lastname}`
 				}
 				// Sign token
 				jwt.sign(
 					payload,
-					keys.secretOrKey,
+					JWT_SECRET,
 					{
 						expiresIn: 31556926 // 1 year in seconds
 					},
@@ -93,4 +101,4 @@ router.post('/login', (req, res) => {
 	})
 })
 
-module.exports = router
+export default router

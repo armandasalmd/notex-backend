@@ -3,10 +3,12 @@
 		"module": "commonjs",
 		"esModuleInterop": true,
 		"target": "es6",
+		"removeComments": true,
 		"moduleResolution": "node",
-		"sourceMap": true,
+		// "sourceMap": true,
 		"outDir": "dist"
 	},
 	"lib": ["es2015"],
-	"exclude": ["node_modules"]
+	"exclude": ["node_modules", "**/*.spec.ts"],
+	"include": ["src/**/*"]
 }

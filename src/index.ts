@@ -33,7 +33,7 @@ app.use('/api/users', usersRouter)
  */
 app.use((req, res) => {
 	res.status(404)
-	res.sendFile(path.join(__dirname, '../public/404.html'))
+	res.json({ code: 404, message: 'Route not found' })
 })
 
 app.listen(PORT, () => {

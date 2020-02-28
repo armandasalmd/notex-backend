@@ -5,6 +5,7 @@ import jwt from 'jsonwebtoken'
 import validateRegisterInput from '../validation/register'
 import validateLoginInput from '../validation/login'
 import User from '../models/User' // Load User model
+import { createSampleNotebook } from '../utils/notebook'
 
 import { config } from 'dotenv'
 config()
@@ -43,6 +44,7 @@ router.post('/register', (req, res) => {
 						.save()
 						.then(user2 => res.json(user2))
 						.catch(err3 => console.log(err3))
+					createSampleNotebook(newUser.email)
 				})
 			})
 		}

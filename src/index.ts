@@ -5,13 +5,18 @@ import passport from 'passport'
 import path from 'path'
 
 import './connectMongo'
-import usersRouter from './controllers/users'
-import passportInit from './connectPassport'
 
+/**
+ * import routers
+ */
+import usersRouter from './controllers/users'
+import backpackRouter from './controllers/backpacks'
+
+import passportInit from './connectPassport'
 import { config } from 'dotenv'
 config()
 const PORT = process.env.PORT || 3001
-const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/notex'
+// const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/notex'
 if (!process.env.MONGO_URI)
 	console.log('Cannot find process.env.MONGO_URI. Using local database!')
 
@@ -26,6 +31,7 @@ app.use(passport.initialize())
 passportInit(passport)
 // Routes
 app.use('/api/users', usersRouter)
+app.use('/api/backpacks', backpackRouter)
 
 /**
  * When no page was found

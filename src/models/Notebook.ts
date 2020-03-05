@@ -8,7 +8,7 @@ const NotebookSchema = createSchema({
 			title: Type.string({ required: true }),
 			creationDate: Type.date({ default: Date.now as any }),
 			text: Type.string({ default: '' }),
-			permission: Type.string({ default: 'private' })
+			accessLevel: Type.string({ default: 'private' })
 		}
 	]
 })

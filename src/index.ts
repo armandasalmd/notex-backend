@@ -24,6 +24,7 @@ const app = express()
 
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
+mongoose.set('useFindAndModify', false)
 
 // Passport middleware
 app.use(passport.initialize())

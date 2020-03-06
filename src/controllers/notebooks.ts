@@ -5,7 +5,7 @@ import Notebook from '../models/Notebook'
 const router = express.Router()
 
 // ADD NEW NOTEBOOK
-// Add new notebook: name, userId/email
+// Add new notebook: title, userId/email
 router.post('/notebook/add', (req: any, res) => {
 	if (req.body.title) {
 		const notebook = new Notebook()

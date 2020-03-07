@@ -25,13 +25,9 @@ router.get(
 		}
 		*/
 		Notebook.find({ owner: req.user.email })
-			.then(notebook => {
-				if (!notebook) {
-					return res
-						.status(404)
-						.json({ message: 'Notebook not found' })
-				}
-				res.json(notebook)
+			.then(notebooks => {
+				if (!notebooks) return res.json([])
+				else res.json(notebooks)
 			})
 			.catch(err => {
 				res.status(500).json({ message: 'An error occured' })

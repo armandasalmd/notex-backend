@@ -1,4 +1,12 @@
+/**
+ * import models
+ */
 import Notebook from '../models/Notebook'
+
+/**
+ * import types
+ */
+import { tNotebook } from '../types'
 
 export function createSampleNotebook(userEmail: String) {
 	const sampleNotebook = new Notebook({
@@ -18,4 +26,8 @@ export function createSampleNotebook(userEmail: String) {
 		]
 	})
 	sampleNotebook.save()
+}
+
+export function toNotebook(document: any): tNotebook {
+	return JSON.parse(JSON.stringify(document))
 }

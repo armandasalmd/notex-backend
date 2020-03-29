@@ -1,7 +1,16 @@
 import express from 'express'
+import { extractNoteFromDocument } from '../utils/note'
+import { toNotebook } from '../utils/notebook'
 
+/**
+ * import models
+ */
 import Notebook from '../models/Notebook'
-import { Mongoose } from 'mongoose'
+
+/**
+ * import types
+ */
+import { tNotebook, tNote } from '../types'
 
 const router = express.Router()
 
@@ -122,12 +131,23 @@ router.delete('/note', (req: any, res) => {
 		const filter = { owner: req.user.email, 'notes._id': req.body.noteId }
 		const update = { $pull: { notes: { _id: req.body.noteId } } }
 		Notebook.findOneAndUpdate(filter, update).then(answer => {
-			if (!answer)
+			// turning Document type to Object/tNotebook type
+			const document: tNotebook = toNotebook(answer)
+			if (!document)
 				res.status(400).json({
 					message:
 						'Error handling the request. Maybe you are not the author of this note?'
 				})
-			else res.json(answer)
+			else {
+				try {
+					res.json(extractNoteFromDocument(document, req.body.noteId))
+				} catch (error) {
+					res.status(500).json({
+						message: 'Server error',
+						status: 500
+					})
+				}
+			}
 		})
 	} else
 		res.status(400).json({
@@ -136,7 +156,7 @@ router.delete('/note', (req: any, res) => {
 })
 
 // ADD NEW NOTE
-// Add new note: name, notebookId, userId/email
+// Add new note: name, notebookId, ?accessLevel userId/email
 router.post('/note/add', (req: any, res) => {
 	if (req.body.name && req.body.notebookId) {
 		const filter = { owner: req.user.email, _id: req.body.notebookId }
@@ -146,10 +166,15 @@ router.post('/note/add', (req: any, res) => {
 					title: req.body.name,
 					text: `### ${req.body.name}`
 				}
+				// if accessLevel was provided and is valid - use it
+				if (['public', 'private'].includes(req.body.accessLevel))
+					newNote.accessLevel = req.body.accessLevel
 				notebook.notes.push(newNote)
 				notebook
 					.save()
-					.then(asnwer => res.json(asnwer))
+					.then(asnwer =>
+						res.json(notebook.notes[notebook.notes.length - 1])
+					)
 					.catch(err => {
 						res.status(500).json({
 							message: 'Error. Cannot save new note'
@@ -181,11 +206,26 @@ router.put('/note/accessLevel', (req: any, res) => {
 			}
 			Notebook.findOneAndUpdate(filter, update)
 				.then(answer => {
-					if (answer) res.json(answer)
-					else
+					if (!answer)
 						res.status(400).json({
 							message: 'Error. Note was not found in database'
 						})
+					const document: tNotebook = toNotebook(answer)
+
+					try {
+						res.json({
+							...extractNoteFromDocument(
+								document,
+								req.body.noteId
+							),
+							accessLevel: req.body.accessLevel
+						})
+					} catch (err) {
+						res.status(500).json({
+							message: 'Server error occured!',
+							status: 500
+						})
+					}
 				})
 				.catch(err => {
 					res.status(400).json({

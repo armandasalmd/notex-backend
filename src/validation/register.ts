@@ -15,6 +15,16 @@ interface RegisterErrors {
 }
 
 const validateRegisterInput = (data: RegisterData): RegisterErrors => {
+	if (!data) {
+		// if undefined
+		data = {
+			firstname: '',
+			lastname: '',
+			email: '',
+			password: '',
+			password2: ''
+		}
+	}
 	const errors: any = {}
 	// Convert empty fields to an empty string so we can use validator functions
 	data.firstname = !isEmpty(data.firstname) ? data.firstname : ''
@@ -57,3 +67,5 @@ const validateRegisterInput = (data: RegisterData): RegisterErrors => {
 }
 
 export default validateRegisterInput
+
+export { RegisterData, RegisterErrors }

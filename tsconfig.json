@@ -1,14 +1,14 @@
 {
 	"compilerOptions": {
-		"module": "commonjs",
-		"esModuleInterop": true,
 		"target": "es6",
+		"module": "commonjs",
+		"lib": ["es2015"],
+		"outDir": "dist",
 		"removeComments": true,
 		"moduleResolution": "node",
+		"esModuleInterop": true
 		// "sourceMap": true,
-		"outDir": "dist"
 	},
-	"lib": ["es2015"],
 	"exclude": ["node_modules", "**/*.spec.ts"],
 	"include": ["src/**/*"]
 }

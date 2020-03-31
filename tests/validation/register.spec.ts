@@ -1,7 +1,7 @@
 import validator, {
 	RegisterData,
 	RegisterErrors
-} from '../../validation/register'
+} from '../../src/validation/register'
 
 describe('testing register validator', () => {
 	const basicForm: RegisterData = {

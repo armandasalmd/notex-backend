@@ -1,4 +1,4 @@
-import validator, { LoginData, LoginErrors } from '../../validation/login'
+import validator, { LoginData, LoginErrors } from '../../src/validation/login'
 
 describe('Testing validator function', () => {
 	describe('passing empty arguments', () => {

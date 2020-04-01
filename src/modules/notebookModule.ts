@@ -1,6 +1,6 @@
-import Notebook from '../models/Notebook'
+import { Notebook } from '../models'
 
-import { tModuleRes } from '../types'
+import { tModuleRes, tUser } from '../types'
 
 export default class NotebookModule {
 	async getAllUserNotebooks(email: String): Promise<tModuleRes> {
@@ -12,5 +12,30 @@ export default class NotebookModule {
 			.catch(err => {
 				return { status: 500, error: 'An error occured' }
 			})
+	}
+
+	async addNewNotebook(title: string, user: tUser): Promise<tModuleRes> {
+		return new Promise((resolve, reject) => {
+			const note: any = {
+				title: 'README',
+				text: `### ${title}\n- Creation date: ${Date().toString()}\n- Author: ${
+					user.firstname
+				} ${user.lastname}`,
+				creationDate: Date.now(),
+				accessLevel: 'private'
+			}
+			const notebook = new Notebook()
+			notebook.title = title
+			notebook.owner = user.email
+			notebook.notes = [note]
+			notebook
+				.save()
+				.then(() => {
+					resolve({ data: notebook })
+				})
+				.catch(err => {
+					reject('cannot create a notebook')
+				})
+		})
 	}
 }

@@ -9,3 +9,11 @@ export interface tRegister extends tLogin {
 	lastname: string
 	password2?: string
 }
+
+export interface tUser {
+	firstname: string
+	lastname: string
+	email: string
+	password?: string
+	dateCreated?: Date
+}

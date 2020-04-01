@@ -25,14 +25,18 @@ router.get(
 			__v: 0
 		}
 		*/
-		const ans: tModuleRes = await new NotebookModule().getAllUserNotebooks(
-			req.user.email
-		)
-		if (ans.error) {
-			res.status(ans.status).json({ message: ans.error })
-		} else {
-			res.json(ans.data)
-		}
+		await new NotebookModule()
+			.getAllUserNotebooks(req.user.email)
+			.then((ans: tModuleRes) => {
+				if (ans.error) {
+					res.status(ans.status).json({ message: ans.error })
+				} else {
+					res.json(ans.data)
+				}
+			})
+			.catch(err => {
+				res.status(500).json({ message: 'server error' })
+			})
 	}
 )
 

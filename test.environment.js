@@ -16,7 +16,6 @@ class TestEnvironment extends NodeEnvironment {
 	async setup() {
 		await super.setup()
 		await this.mongoDb.start()
-		console.log('hello')
 		this.global.process.env.MONGO_DB_URL = await this.mongoDb.getUri()
 	}
 

@@ -10,5 +10,5 @@
 		// "sourceMap": true,
 	},
 	"exclude": ["node_modules", "**/*.spec.ts"],
-	"include": ["src/**/*"]
+	"include": ["src/**/*", "tests/connectMongoTest.ts"]
 }

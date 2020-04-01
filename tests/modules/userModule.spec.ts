@@ -63,7 +63,7 @@ describe('user module', () => {
 					expect(res).toHaveProperty('error')
 					expect(res).not.toHaveProperty('data')
 					expect(res.status).toBe(404)
-					expect(res.error).toContain('email not found')
+					expect(res.error).toContain('Email not found')
 				})
 		})
 
@@ -86,7 +86,7 @@ describe('user module', () => {
 					expect(res).toHaveProperty('error')
 					expect(res).not.toHaveProperty('data')
 					expect(res.status).toBe(400)
-					expect(res.error).toContain('wrong password')
+					expect(res.error).toContain('Wrong password')
 				})
 		})
 		test('wrong password', async () => {
@@ -108,7 +108,30 @@ describe('user module', () => {
 					expect(res).toHaveProperty('error')
 					expect(res).not.toHaveProperty('data')
 					expect(res.status).toBe(400)
-					expect(res.error).toContain('wrong password')
+					expect(res.error).toContain('Wrong password')
+				})
+		})
+
+		test('non existing user', async () => {
+			// Arrange
+			return generateMockUsers()
+				.then(() => {
+					const user: tLogin = {
+						email: 'nonexisting@gmail.com',
+						password: 'asdasdasdasd'
+					}
+					const module = new UserModule()
+					// Acts
+					return module.login(user)
+				})
+				.then((res: tModuleRes) => {
+					// Assert
+					expect(res).toBeDefined()
+					expect(res).toHaveProperty('status')
+					expect(res).toHaveProperty('error')
+					expect(res).not.toHaveProperty('data')
+					expect(res.status).toBe(404)
+					expect(res.error).toContain('Email not found')
 				})
 		})
 	})
@@ -164,7 +187,7 @@ describe('user module', () => {
 					expect(res).toHaveProperty('error')
 					expect(res).not.toHaveProperty('data')
 					expect(res.status).toBe(400)
-					expect(res.error).toContain('email exists')
+					expect(res.error).toContain('Email exists')
 				})
 		})
 	})

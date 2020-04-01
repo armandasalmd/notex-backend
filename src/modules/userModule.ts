@@ -21,7 +21,7 @@ export default class UserModule {
 		return User.findOne({ email: body.email })
 			.then(async user => {
 				if (user) {
-					return { status: 400, error: 'email exists' }
+					return { status: 400, error: 'Email exists' }
 				} else {
 					const newUser = new User({
 						firstname: body.firstname,
@@ -47,7 +47,7 @@ export default class UserModule {
 		const user = await User.findOne({ email: body.email })
 		// Check if user exists
 		if (!user) {
-			return { status: 404, error: 'email not found' }
+			return { status: 404, error: 'Email not found' }
 		}
 		// Check password
 		const isMatch = await bcrypt.compare(body.password, user.password)
@@ -71,7 +71,7 @@ export default class UserModule {
 				}
 			}
 		} else {
-			return { status: 400, error: 'wrong password' }
+			return { status: 400, error: 'Wrong password' }
 		}
 	}
 }

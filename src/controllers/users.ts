@@ -31,7 +31,7 @@ router.post('/register', async (req, res) => {
 		.register(req.body)
 		.then((ans: tModuleRes) => {
 			if (!ans.error) res.json({ data: ans.data })
-			else if (ans.error === 'email exists')
+			else if (ans.error === 'Email exists')
 				res.status(ans.status).json({
 					email: ans.error
 				})
@@ -59,10 +59,12 @@ router.post('/login', async (req, res) => {
 		.login(req.body)
 		.then((ans: tModuleRes) => {
 			if (!ans.error) res.json(ans.data)
-			else if (ans.error === 'wrong password')
+			else if (ans.error === 'Wrong password')
 				res.status(ans.status).json({
-					passwordincorrect: 'Incorrect password'
+					passwordincorrect: ans.error
 				})
+			else if (ans.error === 'Email not found')
+				res.status(ans.status).json({ email: ans.error })
 			else res.status(ans.status).json({ message: ans.error })
 		})
 		.catch(err => {

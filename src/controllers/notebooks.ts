@@ -15,7 +15,7 @@ router.post('/notebook/add', async (req: any, res: Response) => {
 			lastname: req.user.lastname,
 			email: req.user.email
 		}
-		await new NotebookModule()
+		new NotebookModule()
 			.addNewNotebook(req.body.title, user)
 			.then((ans: tModuleRes) => {
 				if (ans.error) {
@@ -24,7 +24,7 @@ router.post('/notebook/add', async (req: any, res: Response) => {
 					res.json(ans.data)
 				}
 			})
-			.catch(err => {
+			.catch(() => {
 				res.status(500).json({ message: 'server error' })
 			})
 	} else res.status(400).json('No req.body.title found')
@@ -34,17 +34,17 @@ router.post('/notebook/add', async (req: any, res: Response) => {
 // Change notebook name: notebookId, auth, newName
 router.put('/notebook/rename', (req: any, res: Response) => {
 	if (req.body.notebookId && req.body.newName) {
-		const filter = { _id: req.body.notebookId }
-		const update = { title: req.body.newName }
-		Notebook.findOneAndUpdate(filter, update)
-			.then(notebook => {
-				notebook.title = req.body.newName // mongooose returns old instance
-				res.json(notebook)
+		new NotebookModule()
+			.renameNotebook(req.body.notebookId, req.body.newName)
+			.then((ans: tModuleRes) => {
+				if (ans.error) {
+					res.status(ans.status).json({ message: ans.error })
+				} else {
+					res.json(ans.data)
+				}
 			})
-			.catch(err => {
-				res.status(500).json({
-					message: 'cannot save update notebook name'
-				})
+			.catch(() => {
+				res.status(500).json({ message: 'server error' })
 			})
 	} else
 		res.status(400).json(
@@ -60,7 +60,7 @@ router.delete('/notebook', (req: any, res: Response) => {
 			.then(() =>
 				res.json({ message: 'Successfully deleted', status: 200 })
 			)
-			.catch(err => {
+			.catch(() => {
 				res.json({ message: 'Cannot delete', status: 400 })
 			})
 	} else res.status(400).json('No req.body.notebookId found')

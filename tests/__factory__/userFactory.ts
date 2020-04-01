@@ -1,5 +1,6 @@
 import { User, Notebook } from '../../src/models'
 import bcrypt from 'bcryptjs'
+import { Types } from 'mongoose'
 
 export async function generateMockUsers() {
 	const users = [
@@ -28,7 +29,7 @@ export async function generateMockUsers() {
 		element.password = await bcrypt.hash(element.password, salt)
 		await new User(element).save()
 	}
-	// console.log((await User.find({})).length)
+	return users
 }
 
 export async function generateNotebooksWithUsers() {
@@ -66,4 +67,5 @@ export async function generateNotebooksWithUsers() {
 	for (const element of notebooks) {
 		await new Notebook(element).save()
 	}
+	return notes
 }

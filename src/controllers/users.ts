@@ -7,6 +7,9 @@ import validateLoginInput from '../validation/login'
 import User from '../models/User' // Load User model
 import { createSampleNotebook } from '../utils/notebook'
 
+import userModule from '../modules/userModule'
+import { tModuleRes } from '../types'
+
 import { config } from 'dotenv'
 config()
 const JWT_SECRET = process.env.JWT_SECRET || 'no secret'
@@ -18,89 +21,55 @@ const router = express.Router()
 // @route POST api/users/register
 // @desc Register user
 // @access Public
-router.post('/register', (req, res) => {
+router.post('/register', async (req, res) => {
 	// Form validation
 	const { errors, isValid } = validateRegisterInput(req.body)
 	// Check validation
-	if (!isValid) {
-		return res.status(400).json(errors)
-	}
-	User.findOne({ email: req.body.email }).then(user => {
-		if (user) {
-			return res.status(400).json({ email: 'Email already exists' })
-		} else {
-			const newUser = new User({
-				firstname: req.body.firstname,
-				lastname: req.body.lastname,
-				email: req.body.email,
-				password: req.body.password
-			})
-			// Hash password before saving in database
-			bcrypt.genSalt(10, (err, salt) => {
-				bcrypt.hash(newUser.password, salt, (err2, hash) => {
-					if (err2) throw err2
-					newUser.password = hash
-					newUser
-						.save()
-						.then(user2 => res.json(user2))
-						.catch(err3 => console.log(err3))
-					createSampleNotebook(newUser.email)
+	if (!isValid) return res.status(400).json(errors)
+
+	await new userModule()
+		.register(req.body)
+		.then((ans: tModuleRes) => {
+			if (!ans.error) res.json({ data: ans.data })
+			else if (ans.error === 'email exists')
+				res.status(ans.status).json({
+					email: ans.error
 				})
-			})
-		}
-	})
+			else res.status(ans.status).json({ message: ans.error })
+		})
+		.catch(err => {
+			if (process.env.NODE_ENV === 'development')
+				res.status(500).json({ message: err.message })
+			else res.status(500).json({ message: 'internal server error' })
+		})
 })
 
 // @route POST api/users/login
 // @desc Login user and return JWT token
 // @access Public
-router.post('/login', (req, res) => {
+router.post('/login', async (req, res) => {
 	// Form validation
 	const { errors, isValid } = validateLoginInput(req.body)
 	// Check validation
 	if (!isValid) {
 		return res.status(400).json(errors)
 	}
-	const email = req.body.email
-	const password = req.body.password
 	// Find user by email
-	User.findOne({ email }).then(user => {
-		// Check if user exists
-		if (!user) {
-			return res.status(404).json({ emailnotfound: 'Email not found' })
-		}
-		// Check password
-		bcrypt.compare(password, user.password).then(isMatch => {
-			if (isMatch) {
-				// User matched
-				// Create JWT Payload
-				const payload = {
-					id: user.id,
-					firstname: user.firstname,
-					lastname: user.lastname,
-					name: `${user.firstname} ${user.lastname}`
-				}
-				// Sign token
-				jwt.sign(
-					payload,
-					JWT_SECRET,
-					{
-						expiresIn: 31556926 // 1 year in seconds
-					},
-					(err, token) => {
-						res.json({
-							success: true,
-							token: 'Bearer ' + token
-						})
-					}
-				)
-			} else {
-				return res
-					.status(400)
-					.json({ passwordincorrect: 'Password incorrect' })
-			}
+	await new userModule()
+		.login(req.body)
+		.then((ans: tModuleRes) => {
+			if (!ans.error) res.json(ans.data)
+			else if (ans.error === 'wrong password')
+				res.status(ans.status).json({
+					passwordincorrect: 'Incorrect password'
+				})
+			else res.status(ans.status).json({ message: ans.error })
 		})
-	})
+		.catch(err => {
+			if (process.env.NODE_ENV === 'development')
+				res.status(500).json({ message: err.message })
+			else res.status(500).json({ message: 'internal server error' })
+		})
 })
 
 export default router

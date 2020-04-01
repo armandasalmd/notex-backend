@@ -1,4 +1,4 @@
-import User from '../../src/models/User'
+import { User, Notebook } from '../../src/models'
 import bcrypt from 'bcryptjs'
 
 export async function generateMockUsers() {
@@ -29,4 +29,41 @@ export async function generateMockUsers() {
 		await new User(element).save()
 	}
 	// console.log((await User.find({})).length)
+}
+
+export async function generateNotebooksWithUsers() {
+	await generateMockUsers()
+	const date = Date.now()
+	const notes = [
+		{
+			title: 'Quick intro',
+			createDate: date,
+			text: '### This is quick intro'
+		},
+		{
+			title: 'Try to delete me',
+			createDate: date,
+			text: 'Find a way to delete me :)'
+		}
+	]
+	const notebooks = [
+		{
+			title: 'Hello world notebook',
+			owner: 'test@gmail.com',
+			notes
+		},
+		{
+			title: 'Hello world notebook',
+			owner: 'mock@gmail.com',
+			notes
+		},
+		{
+			title: 'Hello world notebook',
+			owner: 'tom@gmail.com',
+			notes
+		}
+	]
+	for (const element of notebooks) {
+		await new Notebook(element).save()
+	}
 }

@@ -1,7 +1,7 @@
 /**
  * import models
  */
-import Notebook from '../models/Notebook'
+import { Notebook } from '../models'
 
 /**
  * import types

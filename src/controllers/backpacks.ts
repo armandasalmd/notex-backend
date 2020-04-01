@@ -1,9 +1,10 @@
-import express from 'express'
+import express, { Response } from 'express'
 import passport from 'passport'
 
-import Notebook from '../models/Notebook'
 import noteRouter from './notes'
 import notebookRouter from './notebooks'
+import NotebookModule from '../modules/notebookModule'
+import { tNotebook, tModuleRes, tNote } from '../types'
 
 const router = express.Router()
 
@@ -12,7 +13,7 @@ const router = express.Router()
 router.get(
 	'/',
 	passport.authenticate('jwt', { session: false }),
-	(req: any, res: express.Response) => {
+	async (req: any, res: Response) => {
 		/* console.log(req.user)
 		{
 			_id: 5e49d533619c384ed83124e4,
@@ -24,14 +25,14 @@ router.get(
 			__v: 0
 		}
 		*/
-		Notebook.find({ owner: req.user.email })
-			.then(notebooks => {
-				if (!notebooks) return res.json([])
-				else res.json(notebooks)
-			})
-			.catch(err => {
-				res.status(500).json({ message: 'An error occured' })
-			})
+		const ans: tModuleRes = await new NotebookModule().getAllUserNotebooks(
+			req.user.email
+		)
+		if (ans.error) {
+			res.status(ans.status).json({ message: ans.error })
+		} else {
+			res.json(ans.data)
+		}
 	}
 )
 

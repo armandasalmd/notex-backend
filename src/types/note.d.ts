@@ -1,5 +1,5 @@
 export default interface tNote {
-	_id: String
+	_id?: String
 	title: String
 	creationDate?: Date
 	text: String

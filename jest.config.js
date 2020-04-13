@@ -11,7 +11,8 @@ module.exports = {
 		'!src/models/**',
 		'!src/types',
 		'!src/*.ts',
-		'!src/types/*'
+		'!src/types/*',
+		'!**/index.ts'
 	],
 	testEnvironment: './test.environment'
 }

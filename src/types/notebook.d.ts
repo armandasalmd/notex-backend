@@ -1,7 +1,7 @@
 import Note from './note'
 
 export default interface tNotebook {
-	_id: String
+	_id?: String
 	title: String
 	owner: String
 	notes?: Array<Note>

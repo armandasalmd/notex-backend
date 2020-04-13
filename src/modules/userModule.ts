@@ -9,13 +9,6 @@ import User from '../models/User' // Load User model
 import { createSampleNotebook } from '../utils/notebook'
 import { tModuleRes } from '../types'
 
-/**
- * import environment
- */
-import { config } from 'dotenv'
-config()
-const JWT_SECRET = process.env.JWT_SECRET || 'no secret'
-
 export default class UserModule {
 	async register(body: tRegister): Promise<tModuleRes> {
 		return User.findOne({ email: body.email })
@@ -60,7 +53,7 @@ export default class UserModule {
 				lastname: user.lastname,
 				name: `${user.firstname} ${user.lastname}`
 			}
-
+			const JWT_SECRET = process.env.JWT_SECRET || 'no secret'
 			const token = jwt.sign(payload, JWT_SECRET, {
 				expiresIn: 31556926 // 1 year in seconds
 			})

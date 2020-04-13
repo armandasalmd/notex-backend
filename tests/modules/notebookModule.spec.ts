@@ -1,5 +1,5 @@
 import NotebookModule from '../../src/modules/notebookModule'
-import { tModuleRes, tNotebook, tNote, tUser } from '../../src/types'
+import { tModuleRes, tUser } from '../../src/types'
 import { Notebook } from '../../src/models'
 
 /**
@@ -7,7 +7,7 @@ import { Notebook } from '../../src/models'
  */
 import {
 	generateNotebooksWithUsers,
-	generateMockUsers
+	generateMockUsers,
 } from '../__factory__/userFactory'
 import { connect, disconnect, clear } from '../connectMongoTest'
 import { Types } from 'mongoose'
@@ -75,7 +75,7 @@ describe('notebook module', () => {
 					const user: tUser = {
 						firstname: 'Test',
 						lastname: 'Torn',
-						email: 'test@gmail.com'
+						email: 'test@gmail.com',
 					}
 					// Act
 					const module = new NotebookModule()
@@ -103,7 +103,7 @@ describe('notebook module', () => {
 					const user: tUser = {
 						firstname: 'Test',
 						lastname: 'Torn',
-						email: 'test@gmail.com'
+						email: 'test@gmail.com',
 					}
 					// Act
 					const module = new NotebookModule()
@@ -128,12 +128,12 @@ describe('notebook module', () => {
 						notes: {
 							title: 'Quick intro',
 							createDate: Date.now(),
-							text: '### This is quick intro'
-						}
+							text: '### This is quick intro',
+						},
 					})
 					return notebook.save()
 				})
-				.then(notebook => {
+				.then((notebook) => {
 					// Act
 					const module = new NotebookModule()
 					const id: Types.ObjectId = notebook._id
@@ -161,8 +161,8 @@ describe('notebook module', () => {
 						notes: {
 							title: 'Quick intro',
 							createDate: Date.now(),
-							text: '### This is quick intro'
-						}
+							text: '### This is quick intro',
+						},
 					})
 					return notebook.save()
 				})
@@ -194,12 +194,12 @@ describe('notebook module', () => {
 						notes: {
 							title: 'Quick intro',
 							createDate: Date.now(),
-							text: '### This is quick intro'
-						}
+							text: '### This is quick intro',
+						},
 					})
 					return notebook.save()
 				})
-				.then(notebook => {
+				.then((notebook) => {
 					// Act
 					const module = new NotebookModule()
 					const id: Types.ObjectId = notebook._id
